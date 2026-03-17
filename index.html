@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReFocus: Interactive Episodic Memory with User Feedback</title>
+
+  <!-- SEO / Scholar meta -->
+  <meta name="description" content="ReFocus introduces the first interactive Episodic Memory with Natural Language Query (EM-NLQ) framework, featuring a plug-and-play Feedback ALignment Module (FALM). CVPR 2026." />
+  <meta name="keywords" content="episodic memory, video temporal localization, egocentric video, multimodal learning, FALM, ReFocus, EM-NLQ, EM-QnF" />
+  <meta name="citation_title" content="Interactive Episodic Memory with User Feedback" />
+  <meta name="citation_author" content="Nikesh Subedi" />
+  <meta name="citation_author" content="Loris Bazzani" />
+  <meta name="citation_author" content="Ziad Al-Halah" />
+  <meta name="citation_conference_title" content="CVPR 2026" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="ReFocus: Interactive Episodic Memory with User Feedback" />
+  <meta property="og:description" content="The first interactive EM-NLQ framework with plug-and-play user feedback alignment. CVPR 2026." />
+  <meta property="og:type" content="article" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Tokens ─────────────────────────────────────────────── */
+    :root {
+      --ink:       #0f1117;
+      --ink-soft:  #3a3d4a;
+      --ink-faint: #7a7e8e;
+      --paper:     #fafaf8;
+      --surface:   #f0efe9;
+      --line:      #e2e1d8;
+      --accent:    #2a4bbd;
+      --accent-2:  #c9310f;
+      --accent-glow: rgba(42, 75, 189, 0.12);
+
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans:  'DM Sans', system-ui, sans-serif;
+      --mono:  'JetBrains Mono', monospace;
+
+      --radius: 10px;
+      --shadow: 0 2px 16px rgba(15,17,23,.07);
+      --shadow-lg: 0 8px 40px rgba(15,17,23,.10);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: var(--sans);
+      font-size: 17px;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Hero ───────────────────────────────────────────────── */
+    .hero {
+      padding: 6rem 1.5rem 4rem;
+      text-align: center;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .venue-badge {
+      display: inline-flex; align-items: center; gap: .45rem;
+      background: var(--accent-glow);
+      border: 1px solid rgba(42,75,189,.22);
+      color: var(--accent);
+      font-size: .78rem; font-weight: 600; letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: .3rem .85rem;
+      border-radius: 100px;
+      margin-bottom: 1.8rem;
+    }
+    .venue-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .hero-title {
+      font-family: var(--serif);
+      font-size: clamp(2.1rem, 5vw, 3.2rem);
+      line-height: 1.18;
+      letter-spacing: -.02em;
+      color: var(--ink);
+      margin-bottom: .6rem;
+    }
+    .hero-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: var(--ink-faint);
+      margin-bottom: 2.4rem;
+      font-weight: 300;
+    }
+
+    .authors {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: .25rem .9rem;
+      margin-bottom: .75rem;
+    }
+    .author {
+      font-size: .95rem; font-weight: 500;
+      color: var(--ink-soft);
+      text-decoration: none;
+      transition: color .2s;
+    }
+    .author:hover { color: var(--accent); }
+    .author sup { font-size: .65rem; margin-left: 1px; }
+
+    .affiliation {
+      font-size: .88rem; color: var(--ink-faint);
+      margin-bottom: 2.5rem;
+    }
+
+    /* ─── Button strip ───────────────────────────────────────── */
+    .btn-strip {
+      display: flex; flex-wrap: wrap; justify-content: center;
+      gap: .75rem;
+      margin-bottom: 1rem;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-family: var(--sans); font-size: .88rem; font-weight: 500;
+      padding: .55rem 1.2rem;
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: all .2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+    }
+    .btn-primary:hover { background: #1e3a9e; transform: translateY(-1px); box-shadow: var(--shadow); }
+    .btn-ghost {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      color: var(--ink-soft);
+    }
+    .btn-ghost:hover { background: var(--line); color: var(--ink); transform: translateY(-1px); }
+
+    /* icon placeholders */
+    .icon { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ─── Section skeleton ───────────────────────────────────── */
+    .section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem;
+      border-top: 1px solid var(--line);
+    }
+    .section-label {
+      font-size: .72rem; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: .6rem;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: 1.9rem;
+      letter-spacing: -.02em;
+      color: var(--ink);
+      margin-bottom: 1.4rem;
+      line-height: 1.2;
+    }
+
+    /* ─── Abstract ───────────────────────────────────────────── */
+    #abstract p {
+      font-size: 1.02rem;
+      color: var(--ink-soft);
+      line-height: 1.8;
+    }
+    #abstract strong { color: var(--ink); font-weight: 600; }
+
+    /* ─── Highlights cards ───────────────────────────────────── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.2rem;
+      transition: box-shadow .2s, transform .2s;
+    }
+    .card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .card-icon {
+      font-size: 1.6rem; margin-bottom: .7rem;
+    }
+    .card-title {
+      font-family: var(--serif);
+      font-size: 1.05rem;
+      color: var(--ink);
+      margin-bottom: .4rem;
+    }
+    .card-body {
+      font-size: .88rem;
+      color: var(--ink-faint);
+      line-height: 1.6;
+    }
+
+    /* ─── Method figure placeholder ─────────────────────────── */
+    .figure-box {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 2.5rem 2rem;
+      text-align: center;
+      color: var(--ink-faint);
+      font-size: .92rem;
+      margin: 2rem 0;
+      line-height: 1.6;
+    }
+    .figure-box .placeholder-svg {
+      display: block;
+      margin: 0 auto 1rem;
+    }
+    .figure-caption {
+      font-size: .85rem;
+      color: var(--ink-faint);
+      margin-top: .8rem;
+      font-style: italic;
+    }
+
+    /* ─── Pipeline diagram ───────────────────────────────────── */
+    .pipeline {
+      display: flex; align-items: center; gap: 0;
+      margin: 2rem 0;
+      overflow-x: auto;
+      padding: .5rem 0;
+    }
+    .pipeline-step {
+      flex: 1; min-width: 130px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1rem .8rem;
+      text-align: center;
+      transition: box-shadow .2s;
+    }
+    .pipeline-step:hover { box-shadow: var(--shadow); }
+    .pipeline-step.highlight {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .pipeline-step.highlight .step-label { color: rgba(255,255,255,.8); }
+    .step-icon { font-size: 1.5rem; margin-bottom: .4rem; }
+    .step-name {
+      font-size: .82rem; font-weight: 600;
+      color: var(--ink);
+      margin-bottom: .2rem;
+    }
+    .pipeline-step.highlight .step-name { color: #fff; }
+    .step-label {
+      font-size: .74rem;
+      color: var(--ink-faint);
+    }
+    .pipeline-arrow {
+      padding: 0 .4rem;
+      color: var(--ink-faint);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    /* ─── BibTeX ─────────────────────────────────────────────── */
+    #bibtex .bib-wrap {
+      position: relative;
+      background: #0f1117;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .bib-bar {
+      background: #1b1e2b;
+      padding: .55rem 1rem;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #2a2d3e;
+    }
+    .bib-bar span {
+      font-family: var(--mono);
+      font-size: .78rem;
+      color: #7a7e9a;
+    }
+    .copy-btn {
+      background: #2a2d3e;
+      border: 1px solid #3a3d54;
+      color: #a0a4b8;
+      font-family: var(--mono);
+      font-size: .75rem;
+      padding: .25rem .7rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .copy-btn:hover { background: #3a3d54; color: #fff; }
+    .copy-btn.copied { color: #4ade80; border-color: #4ade80; }
+    #bibtex pre {
+      font-family: var(--mono);
+      font-size: .82rem;
+      color: #c9cde0;
+      padding: 1.4rem 1.2rem;
+      overflow-x: auto;
+      line-height: 1.7;
+      white-space: pre;
+    }
+    #bibtex pre .key   { color: #79c0ff; }
+    #bibtex pre .value { color: #a5d6a7; }
+    #bibtex pre .field { color: #e2a97e; }
+
+    /* ─── Footer ─────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      font-size: .82rem;
+      color: var(--ink-faint);
+      line-height: 1.8;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* ─── Divider ornament ───────────────────────────────────── */
+    .ornament {
+      text-align: center;
+      color: var(--line);
+      font-size: 1.2rem;
+      letter-spacing: .4rem;
+      margin: 0 0 1.5rem;
+    }
+
+    /* ─── Keyword pills ──────────────────────────────────────── */
+    .keywords {
+      display: flex; flex-wrap: wrap; gap: .5rem;
+      margin-top: 1.5rem;
+    }
+    .kw {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 100px;
+      padding: .22rem .75rem;
+      font-size: .78rem;
+      color: var(--ink-soft);
+      font-weight: 500;
+    }
+
+    /* ─── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .pipeline { flex-direction: column; align-items: stretch; }
+      .pipeline-arrow { transform: rotate(90deg); align-self: center; }
+      .hero-title { font-size: 1.9rem; }
+    }
+
+    /* ─── Fade-in animation ──────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero > * {
+      animation: fadeUp .55s ease both;
+    }
+    .hero > *:nth-child(1) { animation-delay: .05s; }
+    .hero > *:nth-child(2) { animation-delay: .12s; }
+    .hero > *:nth-child(3) { animation-delay: .19s; }
+    .hero > *:nth-child(4) { animation-delay: .24s; }
+    .hero > *:nth-child(5) { animation-delay: .29s; }
+    .hero > *:nth-child(6) { animation-delay: .34s; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ HERO ═════════════════════════════ -->
+<header class="hero">
+  <div class="venue-badge">CVPR 2026 · Student Paper</div>
+
+  <h1 class="hero-title">
+    Interactive Episodic Memory<br/>
+    <em>with User Feedback</em>
+  </h1>
+
+  <p class="hero-subtitle">
+    The first interactive EM-NLQ framework — bringing human feedback into visual memory search
+  </p>
+
+  <div class="authors">
+    <span class="author">Nikesh Subedi</span>
+    <span style="color:var(--ink-faint)">·</span>
+    <span class="author">Loris Bazzani</span>
+    <span style="color:var(--ink-faint)">·</span>
+    <span class="author">Ziad Al-Halah</span>
+  </div>
+
+  <p class="affiliation">University of Utah &amp; Amazon</p>
+
+  <div class="btn-strip">
+    <a href="#" class="btn btn-primary">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      Paper PDF
+    </a>
+    <a href="#" class="btn btn-ghost">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      Code (coming soon)
+    </a>
+    <a href="#" class="btn btn-ghost">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      arXiv
+    </a>
+    <span class="btn btn-ghost" style="opacity:.6; cursor:default;">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+      Dataset (coming soon)
+    </span>
+  </div>
+</header>
+
+<!-- ═══════════════════════════ ABSTRACT ═════════════════════════ -->
+<section class="section" id="abstract">
+  <p class="section-label">Abstract</p>
+  <h2 class="section-title">Bringing Interactivity to Visual Memory Search</h2>
+  <p>
+    Current Episodic Memory with Natural Language Query (EM-NLQ) models ignore a critical
+    real-world factor: <strong>interactivity</strong>. Users naturally refine queries and provide
+    feedback when results are off — yet no existing method can leverage this. We introduce
+    <strong>ReFocus</strong>, the first interactive EM-NLQ framework, built around a plug-and-play
+    <strong>Feedback ALignment Module (FALM)</strong> that enables any base model to incorporate
+    user feedback iteratively. We also present the <strong>EM-QnF</strong> task and dataset for
+    feedback-driven interaction, with a lightweight training scheme requiring no sequential
+    optimization. ReFocus achieves state-of-the-art results on three benchmarks and strong gains
+    in human-based evaluation.
+  </p>
+</section>
+
+<!-- ═══════════════════════════ BIBTEX ═══════════════════════════ -->
+<section class="section" id="bibtex">
+  <p class="section-label">Citation</p>
+  <h2 class="section-title">BibTeX</h2>
+  <p style="color:var(--ink-faint); margin-bottom: 1.5rem; font-size:.92rem;">
+    If you find this work useful in your research, please consider citing:
+  </p>
+
+  <div class="bib-wrap">
+    <div class="bib-bar">
+      <span>bibtex</span>
+      <button class="copy-btn" onclick="copyBib(this)">Copy</button>
+    </div>
+    <pre id="bib-content"><span class="key">@inproceedings</span>{<span class="value">subedi2026refocus</span>,
+  <span class="field">title</span>     = {Interactive Episodic Memory with User Feedback},
+  <span class="field">author</span>    = {Subedi, Nikesh and Bazzani, Loris and Al-Halah, Ziad},
+  <span class="field">booktitle</span> = {Proceedings of the IEEE/CVF Conference on Computer
+               Vision and Pattern Recognition (CVPR)},
+  <span class="field">year</span>      = {2026},
+}</pre>
+  </div>
+</section>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
+<footer>
+  <div class="ornament">· · ·</div>
+  This page was built using the
+  <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank">Academic Project Page Template</a>,
+  adopted from the <a href="https://nerfies.github.io" target="_blank">Nerfies</a> project page.
+  Licensed under
+  <a href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">CC BY-SA 4.0</a>.
+</footer>
+
+<script>
+function copyBib(btn) {
+  const pre = document.getElementById('bib-content');
+  const text = pre.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = '✓ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 2200);
+  });
+}
+</script>
+</body>
+</html>
