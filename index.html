@@ -86,7 +86,7 @@
     .hero {
       padding: 5rem 1.5rem 3.5rem;
       text-align: center;
-      max-width: 860px;
+      max-width: 1100px;
       margin: 0 auto;
     }
 
@@ -178,7 +178,7 @@
 
     /* ─── Section skeleton ───────────────────────────────────── */
     .section {
-      max-width: 900px;
+      max-width: 1280px;
       margin: 0 auto;
       padding: 4rem 1.5rem;
       border-top: 1px solid var(--line);
@@ -197,11 +197,30 @@
       line-height: 1.2;
     }
 
-    /* ─── Teaser ─────────────────────────────────────────────── */
-    #teaser {
+    /* ─── Intro (teaser + abstract side by side) ────────────── */
+    #intro {
       border-top: none;
-      padding-top: 0;
+      padding-top: 2rem;
     }
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    .intro-grid .figure-full {
+      border: none;
+      background: none;
+    }
+    .intro-abstract { display: flex; flex-direction: column; gap: 1rem; }
+    .intro-abstract p {
+      font-size: 1rem;
+      color: var(--ink-soft);
+      line-height: 1.8;
+    }
+    .intro-abstract strong { color: var(--ink); font-weight: 600; }
+
+    /* ─── Figure (generic) ───────────────────────────────────── */
     .figure-full {
       width: 100%;
       border-radius: var(--radius);
@@ -259,8 +278,8 @@
     /* ─── Method grid ────────────────────────────────────────── */
     .method-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
+      grid-template-columns: 1fr;
+      gap: 3rem;
       margin-top: 2rem;
     }
     .method-panel {
@@ -319,6 +338,7 @@
     .results-table .refocus-row td { font-weight: 700; color: var(--ink); }
     .results-table .refocus-row td.row-header { color: var(--accent); }
     .results-table .delta { font-size: .72rem; color: var(--green); }
+    .results-table .delta-neg { font-size: .72rem; color: var(--accent-2); }
     .results-table .section-head td {
       background: var(--line);
       font-size: .72rem;
@@ -428,7 +448,8 @@
     }
 
     /* ─── Responsive ─────────────────────────────────────────── */
-    @media (max-width: 680px) {
+    @media (max-width: 760px) {
+      .intro-grid { grid-template-columns: 1fr; }
       .method-grid { grid-template-columns: 1fr; }
       .nav-bar { gap: 1rem; flex-wrap: wrap; }
       .hero-title { font-size: 1.9rem; }
@@ -454,17 +475,16 @@
 
 <!-- ═══════════════════════════ NAV ══════════════════════════════ -->
 <nav class="nav-bar">
-  <a href="#abstract">Abstract</a>
+  <a href="#intro">Abstract</a>
   <a href="#task">Task</a>
   <a href="#method">Method</a>
   <a href="#results">Results</a>
-  <a href="#demo">Demo</a>
   <a href="#bibtex">BibTeX</a>
 </nav>
 
 <!-- ═══════════════════════════ HERO ═════════════════════════════ -->
 <header class="hero">
-  <div class="venue-badge">CVPR 2026 · Student Paper</div>
+  <div class="venue-badge">CVPR 2026</div>
 
   <h1 class="hero-title">
     Interactive Episodic Memory<br/>
@@ -472,7 +492,7 @@
   </h1>
 
   <p class="hero-subtitle">
-    The first interactive EM-NLQ framework — bringing human feedback into visual memory search
+    An interactive EM-NLQ framework, enabling user feedback to refine episodic memory search
   </p>
 
   <div class="authors">
@@ -508,37 +528,30 @@
   </div>
 </header>
 
-<!-- ═══════════════════════════ TEASER ════════════════════════════ -->
-<section class="section" id="teaser">
-  <div class="figure-full">
-    <img src="static/images/fig1-1.png" alt="EM-QnF task overview: user provides feedback to refine an incorrect episodic memory prediction" loading="lazy" />
-  </div>
-  <p class="figure-caption">
-    <strong>EM-QnF task overview.</strong> Given an initial query and an incorrect model prediction (top), the user refines the query through natural language feedback (middle). The model uses the joint context of the query, prediction, and feedback to shift its focus toward the correct moment in the video (bottom).
-  </p>
-</section>
+<!-- ═══════════════════ INTRO (teaser + abstract) ═════════════════ -->
+<section class="section" id="intro">
+  <div class="intro-grid">
+    <!-- Left: teaser figure -->
+    <div>
+      <div class="figure-full">
+        <img src="static/images/fig1-1.png" alt="EM-QnF task overview: user provides feedback to refine an incorrect episodic memory prediction" loading="lazy" />
+      </div>
+      <p class="figure-caption" style="text-align:left;">
+        <strong>EM-QnF task overview.</strong> Given an initial query and an incorrect model prediction (top), the user refines the query through natural language feedback (middle). The model shifts its focus toward the correct moment in the video (bottom).
+      </p>
+    </div>
 
-<!-- ═══════════════════════════ ABSTRACT ═════════════════════════ -->
-<section class="section" id="abstract">
-  <p class="section-label">Abstract</p>
-  <h2 class="section-title">Bringing Interactivity to Visual Memory Search</h2>
-  <p>
-    In episodic memory with natural language queries (EM-NLQ), a user may ask a question (e.g., <em>"Where did I place the mug?"</em>) that requires searching a long egocentric video to find the moment that answers it. However, queries can be ambiguous or incomplete, leading to incorrect responses. <strong>Current methods address EM-NLQ in a one-shot setup, ignoring this key aspect and limiting their applicability in real-world scenarios.</strong>
-  </p>
-  <br/>
-  <p>
-    In this work, we address this gap and introduce the <strong>Episodic Memory with Questions and Feedback</strong> task (EM-QnF). Here, the user can provide feedback on the model's initial prediction or add more information (e.g., <em>"Before this. I'm looking for the big blue mug not the white one"</em>), helping the model refine its predictions interactively. To this end, we collect datasets for feedback-based interaction and propose a lightweight training scheme that avoids expensive sequential optimization. We also introduce a plug-and-play <strong>Feedback ALignment Module (FALM)</strong> that enables existing EM-NLQ models to incorporate user feedback effectively. Our approach significantly improves over the state of the art on three challenging benchmarks and is better than or competitive with commercial large vision-language models while remaining efficient.
-  </p>
-
-  <div class="keywords">
-    <span class="kw">Episodic Memory</span>
-    <span class="kw">Natural Language Query</span>
-    <span class="kw">Egocentric Video</span>
-    <span class="kw">Temporal Localization</span>
-    <span class="kw">User Feedback</span>
-    <span class="kw">EM-QnF</span>
-    <span class="kw">FALM</span>
-    <span class="kw">CVPR 2026</span>
+    <!-- Right: abstract -->
+    <div class="intro-abstract" id="abstract">
+      <p class="section-label" style="margin-bottom:0;">Abstract</p>
+      <h2 class="section-title" style="margin-bottom:.6rem;">Bringing Interactivity to Visual Memory Search</h2>
+      <p>
+        In episodic memory with natural language queries (EM-NLQ), a user may ask a question (e.g., <em>"Where did I place the mug?"</em>) that requires searching a long egocentric video to find the moment that answers it. However, queries can be ambiguous or incomplete, leading to incorrect responses. <strong>Current methods address EM-NLQ in a one-shot setup, ignoring this key aspect and limiting their applicability in real-world scenarios.</strong>
+      </p>
+      <p>
+        In this work, we address this gap and introduce the <strong>Episodic Memory with Questions and Feedback</strong> task (EM-QnF). Here, the user can provide feedback on the model's initial prediction or add more information (e.g., <em>"Before this. I'm looking for the big blue mug not the white one"</em>), helping the model refine its predictions interactively. We also introduce a plug-and-play <strong>Feedback ALignment Module (FALM)</strong> that enables existing EM-NLQ models to incorporate user feedback effectively. Our approach significantly improves over the state of the art on three challenging benchmarks and is competitive with commercial LVLMs while remaining efficient.
+      </p>
+    </div>
   </div>
 </section>
 
@@ -548,10 +561,10 @@
   <h2 class="section-title">Episodic Memory with Questions &amp; Feedback (EM-QnF)</h2>
 
   <p>
-    <strong>Episodic Memory with Natural Language Query (EM-NLQ)</strong> retrieves specific moments from a person's past visual experiences — such as wearable-camera video — using free-form text questions. For example, a user might ask, <em>"What did I put in the frying pan?"</em>, and the model must identify the exact temporal window in the video that answers the question. Current methods localize the query in a one-shot manner and therefore cannot handle query ambiguity or model errors.
+    <strong>Episodic Memory with Natural Language Query (EM-NLQ)</strong> retrieves specific moments from a person's past visual experiences (such as wearable-camera video) using free-form text questions. For example, a user might ask, <em>"What did I put in the frying pan?"</em>, and the model must identify the exact temporal window in the video that answers the question. Current methods localize the query in a one-shot manner and therefore cannot handle query ambiguity or model errors.
   </p>
   <p>
-    We introduce <strong>EM-QnF</strong>, which extends EM-NLQ by allowing users to provide natural language feedback after seeing an incorrect prediction. Given a video <em>V</em>, query <em>Q</em>, and an initial (possibly wrong) prediction, the user provides feedback <em>F</em> — containing additional, contrastive, or temporal information — to guide the model toward the correct answer. This interactive process continues over multiple rounds, bringing episodic memory search closer to how humans naturally seek information about their past experiences.
+    We introduce <strong>EM-QnF</strong>, which extends EM-NLQ by allowing users to provide natural language feedback after seeing an incorrect prediction. Given a video <em>V</em>, query <em>Q</em>, and an initial (possibly wrong) prediction, the user provides feedback <em>F</em> (containing additional, contrastive, or temporal information) to guide the model toward the correct answer. This interactive process continues over multiple rounds, bringing episodic memory search closer to how humans naturally seek information about their past experiences.
   </p>
   <p>
     To support this new task, we construct the <strong>EM-QnF datasets</strong> from three existing egocentric benchmarks (Ego4D-NLQ, GoalStep, HD-EPIC) using a scalable synthetic feedback generation recipe, removing the need for costly manual annotation.
@@ -571,7 +584,7 @@
     <!-- Panel A: Recipe -->
     <div class="method-panel">
       <h3 class="method-panel-title">Feedback Generation Recipe</h3>
-      <div class="figure-full">
+      <div class="figure-full" style="max-width:50%; margin:0 auto;">
         <img src="static/images/fig2-1.png" alt="Feedback generation recipe diagram" loading="lazy" />
       </div>
       <p>
@@ -598,24 +611,8 @@
   <h2 class="section-title">State-of-the-Art on Three Benchmarks</h2>
 
   <p style="color:var(--ink-soft); font-size:.95rem; margin-bottom:1.5rem;">
-    We evaluate on three egocentric video datasets adapted to EM-QnF. Superscripts show the delta (Δ) relative to the same model given only the query — a positive value means the model benefits from user feedback.
+    We evaluate on three egocentric video datasets adapted to EM-QnF. Superscripts show the delta (Δ) relative to the same model given only the query; a positive value means the model benefits from user feedback.
   </p>
-
-  <!-- Highlight callouts -->
-  <div class="highlight-callout">
-    <div class="callout-card">
-      <div class="callout-num">+4.9</div>
-      <div class="callout-label">R@1 gain on GoalStep-QnF (IoU 0.3)</div>
-    </div>
-    <div class="callout-card">
-      <div class="callout-num">+5.4</div>
-      <div class="callout-label">R@5 gain on GoalStep-QnF (IoU 0.3)</div>
-    </div>
-    <div class="callout-card">
-      <div class="callout-num">+3.3</div>
-      <div class="callout-label">R@1 gain on Ego4D-QnF (IoU 0.3)</div>
-    </div>
-  </div>
 
   <!-- Main results table -->
   <div class="results-table-wrap">
@@ -645,30 +642,30 @@
         <tr class="section-head"><td colspan="13">Large Vision-Language Models</td></tr>
         <tr>
           <td class="row-header">TimeChat (ZS)</td>
-          <td>1.6 <span class="delta">−0.2</span></td><td>—</td>
-          <td>0.7 <span class="delta">−0.2</span></td><td>—</td>
-          <td>2.3 <span class="delta">+0.9</span></td><td>—</td>
-          <td>1.1 <span class="delta">+0.7</span></td><td>—</td>
-          <td>0.2</td><td>—</td>
-          <td>0.0</td><td>—</td>
+          <td>1.6 <span class="delta-neg">−0.2</span></td><td>N/A</td>
+          <td>0.7 <span class="delta-neg">−0.2</span></td><td>N/A</td>
+          <td>2.3 <span class="delta">+0.9</span></td><td>N/A</td>
+          <td>1.1 <span class="delta">+0.7</span></td><td>N/A</td>
+          <td>0.2</td><td>N/A</td>
+          <td>0.0</td><td>N/A</td>
         </tr>
         <tr>
           <td class="row-header">UniTime (ZS)</td>
-          <td>19.9 <span class="delta">−5.2</span></td><td>—</td>
-          <td>12.3 <span class="delta">−3.3</span></td><td>—</td>
-          <td>10.2 <span class="delta">−1.7</span></td><td>—</td>
-          <td>6.0 <span class="delta">−0.8</span></td><td>—</td>
-          <td>3.6 <span class="delta">−2.0</span></td><td>—</td>
-          <td>1.3 <span class="delta">−1.2</span></td><td>—</td>
+          <td>19.9 <span class="delta-neg">−5.2</span></td><td>N/A</td>
+          <td>12.3 <span class="delta-neg">−3.3</span></td><td>N/A</td>
+          <td>10.2 <span class="delta-neg">−1.7</span></td><td>N/A</td>
+          <td>6.0 <span class="delta-neg">−0.8</span></td><td>N/A</td>
+          <td>3.6 <span class="delta-neg">−2.0</span></td><td>N/A</td>
+          <td>1.3 <span class="delta-neg">−1.2</span></td><td>N/A</td>
         </tr>
         <tr>
           <td class="row-header">UniTime (FT)</td>
-          <td>21.7 <span class="delta">−3.4</span></td><td>—</td>
-          <td>13.3 <span class="delta">−2.3</span></td><td>—</td>
-          <td>8.2 <span class="delta">−0.3</span></td><td>—</td>
-          <td>5.5 <span class="delta">−0.1</span></td><td>—</td>
-          <td>2.5 <span class="delta">−1.6</span></td><td>—</td>
-          <td>1.0 <span class="delta">−0.8</span></td><td>—</td>
+          <td>21.7 <span class="delta-neg">−3.4</span></td><td>N/A</td>
+          <td>13.3 <span class="delta-neg">−2.3</span></td><td>N/A</td>
+          <td>8.2 <span class="delta-neg">−0.3</span></td><td>N/A</td>
+          <td>5.5 <span class="delta-neg">−0.1</span></td><td>N/A</td>
+          <td>2.5 <span class="delta-neg">−1.6</span></td><td>N/A</td>
+          <td>1.0 <span class="delta-neg">−0.8</span></td><td>N/A</td>
         </tr>
         <tr class="section-head"><td colspan="13">Task-Expert EM-NLQ Models</td></tr>
         <tr>
@@ -712,39 +709,71 @@
   </div>
 
   <p style="color:var(--ink-faint); font-size:.82rem; margin-top:.5rem;">
-    Δ = performance with feedback − performance with query only. Bold rows are ReFocus (ours). LVLMs evaluated zero-shot (ZS) or fine-tuned (FT) on QnF data. R@5 not available (—) for LVLMs.
+    Δ = performance with feedback − performance with query only. Bold rows are ReFocus (ours). LVLMs evaluated zero-shot (ZS) or fine-tuned (FT) on QnF data. R@5 not available (N/A) for LVLMs.
   </p>
 
   <p style="color:var(--ink-soft); font-size:.95rem; margin-top:1.5rem; line-height:1.8;">
-    Notably, ReFocus also outperforms <strong>Gemini-2.5-Flash</strong> on a targeted subset of 100 queries where the base model fails — even with direct access to the video and feedback. This confirms that even commercial LVLMs struggle to reason effectively over feedback in long-form egocentric video.
-  </p>
-</section>
-
-<!-- ═══════════════════════════ DEMO ══════════════════════════════ -->
-<section class="section" id="demo">
-  <p class="section-label">Demo</p>
-  <h2 class="section-title">Qualitative Results</h2>
-
-  <p>
-    The figure below shows qualitative examples from the Ego4D-QnF dataset. In examples (a) and (b), <strong>ReFocus (GroundNLQ)</strong> successfully leverages user feedback about object attributes and contrast with the reference span to shift its prediction to the correct moment. Example (c) shows a failure case where the model correctly shifts attention earlier but is confused by visually similar distractors.
+    Notably, ReFocus also outperforms <strong>Gemini-2.5-Flash</strong> on a targeted subset of 100 queries where the base model fails, even with direct access to the video and feedback. This confirms that even commercial LVLMs struggle to reason effectively over feedback in long-form egocentric video.
   </p>
 
-  <div class="figure-full" style="margin-top: 1.5rem;">
-    <img src="static/images/qualitative-1.png" alt="Qualitative results: success cases (a,b) and failure case (c)" loading="lazy" />
+  <h3 style="font-family:var(--serif); font-size:1.4rem; color:var(--ink); margin-top:2.5rem; margin-bottom:1.2rem;">Video Examples</h3>
+
+  <!-- Success examples -->
+  <p style="font-size:.78rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--accent); margin-bottom:.8rem;">Success Cases</p>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:2rem;">
+    <div>
+      <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); background:#000;">
+        <video controls preload="metadata" style="width:100%; display:block;">
+          <source src="static/clips/success1.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <p style="font-size:.82rem; color:var(--ink-faint); margin-top:.5rem; text-align:center;">Example 1</p>
+    </div>
+    <div>
+      <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); background:#000;">
+        <video controls preload="metadata" style="width:100%; display:block;">
+          <source src="static/clips/success2.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <p style="font-size:.82rem; color:var(--ink-faint); margin-top:.5rem; text-align:center;">Example 2</p>
+    </div>
+    <div>
+      <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); background:#000;">
+        <video controls preload="metadata" style="width:100%; display:block;">
+          <source src="static/clips/success3.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <p style="font-size:.82rem; color:var(--ink-faint); margin-top:.5rem; text-align:center;">Example 3</p>
+    </div>
+    <div>
+      <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); background:#000;">
+        <video controls preload="metadata" style="width:100%; display:block;">
+          <source src="static/clips/success4.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <p style="font-size:.82rem; color:var(--ink-faint); margin-top:.5rem; text-align:center;">Example 4</p>
+    </div>
   </div>
-  <p class="figure-caption">
-    <strong>(a) &amp; (b)</strong> Successful feedback refinement — ReFocus shifts focus using contrastive object cues. <strong>(c)</strong> Failure case — model shifts attention correctly in time but cannot disambiguate visually similar objects.
-  </p>
 
-  <h3 style="font-family:var(--serif); font-size:1.3rem; color:var(--ink); margin-top:2.5rem; margin-bottom:.8rem;">Supplementary Video</h3>
-  <p>
-    The video below provides additional qualitative comparisons, highlights interactions with user feedback, and includes failure cases where the model struggles to leverage feedback effectively.
-  </p>
-  <div style="margin-top:1.2rem; border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); background:#000;">
-    <video controls preload="metadata" style="width:100%; display:block; max-height:560px;">
-      <source src="static/supp_vid_compressed.mp4" type="video/mp4" />
-      Your browser does not support the video tag.
-    </video>
+  <!-- Failure examples -->
+  <p style="font-size:.78rem; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--accent-2); margin-bottom:.8rem;">Failure Cases</p>
+  <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1rem;">
+    <div>
+      <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); background:#000;">
+        <video controls preload="metadata" style="width:100%; display:block;">
+          <source src="static/clips/failure1.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <p style="font-size:.82rem; color:var(--ink-faint); margin-top:.5rem; text-align:center;">Failure 1</p>
+    </div>
+    <div>
+      <div style="border-radius:var(--radius); overflow:hidden; border:1px solid var(--line); background:#000;">
+        <video controls preload="metadata" style="width:100%; display:block;">
+          <source src="static/clips/failure2.mp4" type="video/mp4" />
+        </video>
+      </div>
+      <p style="font-size:.82rem; color:var(--ink-faint); margin-top:.5rem; text-align:center;">Failure 2</p>
+    </div>
   </div>
 </section>
 
